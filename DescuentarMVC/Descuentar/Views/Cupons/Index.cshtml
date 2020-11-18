@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Descuentar.Models.Cupon>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.companyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Discount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.life)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.likes)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr id="@item.ID">
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.companyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.life)
+            </td>
+            <td name="like">
+                @Html.DisplayFor(modelItem => item.likes)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
+                <a asp-action="Thanks" asp-route-id="@item.ID">Copy Cupon</a> |
+                <button onclick="postLike(@item.ID)">Like!</button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<script>
+    const postLike = id => {
+        console.log(id);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateLikes", "Liker")',
+            data: JSON.stringify({ ID: id }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                document.getElementById(id).querySelectorAll('[name=like]')[0].innerHTML = response.data;
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+</script>
